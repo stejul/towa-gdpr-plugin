@@ -361,12 +361,12 @@ class Plugin
                 'side'
             );
             \add_meta_box(
-                'towa-gdpr-plugin-import-export',
+                'towa-gdpr-plugin-export',
                 __(
-                    'import & export Settings',
+                    'export Settings',
                     'towa-gdpr-plugin'
                 ),
-                [$this, 'displayImportExportAcfMetabox'],
+                [$this, 'displayExportAcfMetabox'],
                 'acf_options_page',
                 'side'
             );

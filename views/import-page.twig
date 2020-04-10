@@ -1,0 +1,6 @@
+<h3>{{ __('Import Settings') }}</h3>
+<form method="post" enctype="multipart/form-data">
+    <label for="import_file">{{  __('choose import file','towa-gdpr-plugin') }}</label><br/>
+    <input class="button button-secondary" style="padding: 10px; height: auto; margin: 20px 0" type="file" accept="application/json" name="towa_gdpr_settings_file"/><br/>
+    <input class="button button-primary" type="submit" value="{{ __('import Settings','towa-gdpr-plugin') }}" name="import_settings">
+</form>
