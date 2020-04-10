@@ -25,6 +25,7 @@ class Importer
             throw new \Exception('Settings can only be imported by user with manage_options permissions');
         }
         $importFile = $this->getImportFileFromRequest();
+        // TODO: validate File further.
         $settings = $this->deSerializeFile($importFile);
         $pluginSettings = new PluginSettings($settings);
         $pluginSettings->saveSettings();

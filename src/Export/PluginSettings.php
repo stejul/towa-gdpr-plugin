@@ -159,7 +159,8 @@ class PluginSettings implements \JsonSerializable
             $this->saveAcfSettingsByLanguage($this->acfSettings);
             return;
         }
-
+        // TODO: only import to languages if plugin is active maybe? Deactivated Plugin still has entries in database.
+        // TODO: check what happens with default language
         collect($languages)->each(function ($language) {
             if (isset($this->acfSettings[$language])) {
                 $this->saveAcfSettingsByLanguage($this->acfSettings[$language], $language);

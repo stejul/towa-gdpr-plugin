@@ -96,6 +96,7 @@ class Plugin
 
     public function addImportPage()
     {
+        //TODO: find way to display it as subpage of towa-gdpr-plugin
         \add_menu_page(
             'Import Settings',
             'Import Towa GDPR Settings',
