@@ -101,7 +101,7 @@ class Plugin
             'Import Towa GDPR Settings',
             'manage_options',
             'towa-gdpr-import',
-            [$this, 'renderAdminPage'],
+            [$this, 'renderImportPage'],
             'dashicons-upload'
         );
     }
@@ -192,14 +192,14 @@ class Plugin
         }
     }
 
-    public function renderAdminPage()
+    public function renderImportPage()
     {
         if (PluginHelper::shouldImport()) {
             $importer = new Importer();
             $importer->runImport();
-            exit;
+            PluginHelper::renderTwigTemplate('import-page-success.twig');
         }
-        PluginHelper::renderTwigTemplate('admin-page.twig');
+        PluginHelper::renderTwigTemplate('import-page.twig');
     }
 
     /**

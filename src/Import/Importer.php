@@ -21,7 +21,7 @@ class Importer
      */
     public function runImport(): void
     {
-        if (! current_user_can('manager_options')) {
+        if (! current_user_can('manage_options')) {
             throw new \Exception('Settings can only be imported by user with manage_options permissions');
         }
         $importFile = $this->getImportFileFromRequest();
