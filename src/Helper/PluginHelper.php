@@ -30,6 +30,14 @@ class PluginHelper
     }
 
     /**
+     * Returns if the export settings button was hit.
+     */
+    public static function shouldImport(): bool
+    {
+        return isset($_POST['import_settings']);
+    }
+
+    /**
      * Is the current screen, the towa-gdpr screen.
      */
     public static function isGdprPluginAdminScreen(): bool

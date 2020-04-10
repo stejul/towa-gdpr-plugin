@@ -15,6 +15,7 @@ use Towa\GdprPlugin\Acf\AcfCookies;
 use Towa\GdprPlugin\Acf\AcfSettings;
 use Towa\GdprPlugin\Export\Exporter;
 use Towa\GdprPlugin\Helper\PluginHelper;
+use Towa\GdprPlugin\Import\Importer;
 use Towa\GdprPlugin\Rest\Rest;
 
 // phpcs:disable PSR1.Files.SideEffects
@@ -83,12 +84,26 @@ class Plugin
         add_action('wp_head', [$this, 'addMetaTagNoCookieSite']);
         add_action('acf/validate_value/key=towa_gdpr_settings_towa_gdpr_ip', [$this, 'validateIp'], 10, 2);
         add_action('admin_init', [$this, 'syncJsonFile']);
+        add_action('admin_menu', [$this, 'addImportPage']);
+
         if (!function_exists('acf_add_options_page')) {
             add_action('admin_notices', [$this, 'myAcfNotice']);
         }
         if (!\is_admin() && function_exists('get_fields')) {
             add_action('wp_footer', [$this, 'loadFooter']);
         }
+    }
+
+    public function addImportPage()
+    {
+        \add_menu_page(
+            'Import Settings',
+            'Import Towa GDPR Settings',
+            'manage_options',
+            'towa-gdpr-import',
+            [$this, 'renderAdminPage'],
+            'dashicons-upload'
+        );
     }
 
     /**
@@ -157,7 +172,7 @@ class Plugin
                         'menu_title' => $menu_title,
                         'menu_slug' => $menu_slug,
                         'capability' => $capability,
-                        'redirect' => $redirect,
+                        'redirect' => $redirect
                     ] = $menupage; //phpcs:ignore
 
                     \acf_add_options_page(
@@ -166,7 +181,7 @@ class Plugin
                             'menu_title' => $menu_title,
                             'menu_slug' => $menu_slug,
                             'capability' => $capability,
-                            'redirect' => $redirect,
+                            'redirect' => true,
                         ]
                     );
 
@@ -175,6 +190,16 @@ class Plugin
                 }
             );
         }
+    }
+
+    public function renderAdminPage()
+    {
+        if (PluginHelper::shouldImport()) {
+            $importer = new Importer();
+            $importer->runImport();
+            exit;
+        }
+        PluginHelper::renderTwigTemplate('admin-page.twig');
     }
 
     /**
