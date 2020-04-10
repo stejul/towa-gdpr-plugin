@@ -152,9 +152,7 @@ class Plugin
         $twig->addFunction($function);
 
         $data = self::getData();
-
-        $template = $twig->load('cookie-notice.twig');
-        echo $template->render($data); // phpcs:ignore
+        PluginHelper::renderTwigTemplate('cookie-notice.twig', $data);
     }
 
     /**
@@ -391,43 +389,12 @@ class Plugin
      */
     public function displayAcfMetabox(): void
     {
-        $loader = new \Twig\Loader\FilesystemLoader(TOWA_GDPR_PLUGIN_DIR . '/views/');
-        $twig = new \Twig\Environment($loader);
-        $function = new \Twig\TwigFunction(
-            '__',
-            function (string $string, string $textdomain = 'towa-gdpr-plugin') {
-                return __($string, $textdomain); //phpcs:ignore
-            }
-        );
-
-        $twig->addFunction($function);
-
-        $template = $twig->load('meta-box.twig');
-        echo $template->render(); // phpcs:ignore
+        PluginHelper::renderTwigTemplate('meta-box.twig');
     }
 
-    /**
-     * Renders import/export Acf Metabox from Twig file.
-     *
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     */
-    public function displayImportExportAcfMetabox(): void
+    public function displayExportAcfMetabox()
     {
-        $loader = new \Twig\Loader\FilesystemLoader(TOWA_GDPR_PLUGIN_DIR . '/views/');
-        $twig = new \Twig\Environment($loader);
-        $function = new \Twig\TwigFunction(
-            '__',
-            function (string $string, string $textdomain = 'towa-gdpr-plugin') {
-                return __($string, $textdomain); //phpcs:ignore
-            }
-        );
-
-        $twig->addFunction($function);
-
-        $template = $twig->load('import-export-meta-box.twig');
-        echo $template->render(); // phpcs:ignore
+        PluginHelper::renderTwigTemplate('export-meta-box.twig');
     }
 
     /**

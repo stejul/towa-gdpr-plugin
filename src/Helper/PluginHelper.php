@@ -3,6 +3,9 @@
 namespace Towa\GdprPlugin\Helper;
 
 use Illuminate\Support\Str;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use Twig\TwigFunction;
 
 class PluginHelper
 {
@@ -120,5 +123,37 @@ class PluginHelper
             return implode('/', [$uploadPath['basedir'], 'towa-gdpr']);
         }
         throw new \Exception("Can't find upload directory");
+    }
+
+    /**
+     * Renders a given Twig template
+     *
+     * @param $filename
+     * @param array|null $data
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public static function renderTwigTemplate(string $filename, array $data = null): void
+    {
+        $viewpath = TOWA_GDPR_PLUGIN_DIR . '/views/';
+
+        $loader = new FilesystemLoader($viewpath);
+        $twig = new Environment($loader);
+        $function = new TwigFunction(
+            '__',
+            function (string $string, string $textdomain = 'towa-gdpr-plugin') {
+                return __($string, $textdomain); //phpcs:ignore
+            }
+        );
+
+        $twig->addFunction($function);
+
+        $template = $twig->load($filename);
+        if ($data) {
+            echo $template->render($data);
+        } else {
+            echo $template->render();
+        }
     }
 }
