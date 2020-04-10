@@ -140,17 +140,6 @@ class Plugin
      */
     public function loadFooter(): void
     {
-        $loader = new \Twig\Loader\FilesystemLoader(TOWA_GDPR_PLUGIN_DIR . '/views/');
-        $twig = new \Twig\Environment($loader);
-        $function = new \Twig\TwigFunction(
-            '__',
-            function (string $string, string $textdomain = 'towa-gdpr-plugin') {
-                return __($string, $textdomain); //phpcs:ignore
-            }
-        );
-
-        $twig->addFunction($function);
-
         $data = self::getData();
         PluginHelper::renderTwigTemplate('cookie-notice.twig', $data);
     }
