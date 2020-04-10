@@ -25,7 +25,6 @@ $towa_gdpr_plugin_settings = [
             'menu_title' => __('Towa GDPR', 'towa-gdpr-plugin'),
             'capability' => 'manage_options',
             'menu_slug' => 'towa-gdpr-plugin',
-            'view' => TOWA_GDPR_PLUGIN_DIR . 'views/admin-page.twig',
             'redirect' => false,
         ],
     ],

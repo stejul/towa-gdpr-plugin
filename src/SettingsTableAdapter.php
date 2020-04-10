@@ -72,7 +72,7 @@ final class SettingsTableAdapter
      * Setup Settings from Acf Data Array
      * @param array $plugindata
      */
-    private function setSettings(array $plugindata): void
+    public function setSettings(array $plugindata): void
     {
         $settings = [];
         if (isset($plugindata['essential_group'])) {
@@ -182,5 +182,22 @@ final class SettingsTableAdapter
         $tablename = self::getTableName();
         $sql = "DROP TABLE IF EXISTS $tablename";
         $wpdb->query($sql);
+    }
+
+    /**
+     * @param $row
+     * @return mixed
+     */
+    public static function insertRow(array $row)
+    {
+        $wpdb = self::getDb();
+        return $wpdb->insert(self::getTableName(), $row);
+    }
+
+    public static function resetTable()
+    {
+        $wpdb = self::getDb();
+        $tablename = self::getTableName();
+        $wpdb->query("TRUNCATE TABLE `$tablename`");
     }
 }

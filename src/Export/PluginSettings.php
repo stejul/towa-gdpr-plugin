@@ -33,10 +33,15 @@ class PluginSettings implements \JsonSerializable
      */
     private $pluginSettings = [];
 
-    public function __construct()
+    public function __construct($settings = null)
     {
-        $this->setAcfSettingsFromDatabase();
-        $this->setPluginSettingsFromDatbase();
+        if ($settings) {
+            $this->setAcfSettings($settings['acfSettings']);
+            $this->setPluginSettings($settings['pluginSettings']);
+        } else {
+            $this->setAcfSettingsFromDatabase();
+            $this->setPluginSettingsFromDatbase();
+        }
     }
 
     /**
@@ -51,6 +56,7 @@ class PluginSettings implements \JsonSerializable
         }
 
         $settings = [];
+
         collect($languages)->each(function ($language) use (&$settings) {
             $fieldNames = array_merge(
                 AcfCookies::getFieldNames(),
@@ -101,5 +107,63 @@ class PluginSettings implements \JsonSerializable
             'acfSettings' => $this->acfSettings,
             'pluginSettings' => $this->pluginSettings
         ];
+    }
+
+    /**
+     * Save current Plugin Settings to the Database
+     */
+    private function savePluginSettings(): void
+    {
+        SettingsTableAdapter::resetTable();
+        collect($this->pluginSettings)->each(function ($row) {
+            SettingsTableAdapter::insertRow((array) $row);
+        });
+    }
+
+    /**
+     * Save current Settings to Database
+     */
+    public function saveSettings(): void
+    {
+        $this->savePluginSettings();
+        $this->saveAcfSettings();
+    }
+
+    /**
+     * Save Acf settings array to a specific language setting.
+     *
+     * @param array $settings
+     * @param string $language
+     */
+    private function saveAcfSettingsByLanguage(array $settings, string $language = ''): void
+    {
+        $fieldNames = array_merge(
+            AcfCookies::getFieldNames(),
+            AcfSettings::getFieldNames()
+        );
+        collect($settings)->each(function ($fieldvalues, $key) use ($fieldNames, $language) {
+            if (in_array($key, $fieldNames)) {
+                $option = $language !== '' ? 'options_' . $language : 'options';
+                update_field($key, $fieldvalues, $option);
+            }
+        });
+    }
+
+    /*
+     * Save current Acf settings to Database.
+     */
+    private function saveAcfSettings(): void
+    {
+        $languages = PluginHelper::getActiveLanguages();
+        if (!$languages || !is_iterable($languages)) {
+            $this->saveAcfSettingsByLanguage($this->acfSettings);
+            return;
+        }
+
+        collect($languages)->each(function ($language) {
+            if (isset($this->acfSettings[$language])) {
+                $this->saveAcfSettingsByLanguage($this->acfSettings[$language], $language);
+            }
+        });
     }
 }
